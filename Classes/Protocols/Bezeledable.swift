@@ -1,16 +1,16 @@
 #if os(macOS)
-import AppKit
+    import AppKit
 #else
-import UIKit
+    import UIKit
 #endif
 
-public protocol Bezeledable: class {
+public protocol Bezeledable: AnyObject {
     @discardableResult
     func bezeled() -> Self
-    
+
     @discardableResult
     func bezeled(_ value: Bool) -> Self
-    
+
     @discardableResult
     func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self
 }
@@ -19,14 +19,14 @@ protocol _Bezeledable: Bezeledable {
     func _setBezeled(_ v: Bool)
 }
 
-extension Bezeledable {
+public extension Bezeledable {
     @discardableResult
-    public func bezeled() -> Self {
+    func bezeled() -> Self {
         bezeled(true)
     }
-    
+
     @discardableResult
-    public func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self {
+    func bezeled(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in
             self?.bezeled($0)
         }
@@ -35,9 +35,9 @@ extension Bezeledable {
 }
 
 @available(iOS 13.0, macOS 10.15, *)
-extension Bezeledable {
+public extension Bezeledable {
     @discardableResult
-    public func bezeled(_ value: Bool) -> Self {
+    func bezeled(_ value: Bool) -> Self {
         guard let s = self as? _Bezeledable else { return self }
         s._setBezeled(value)
         return self

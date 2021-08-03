@@ -1,10 +1,10 @@
 #if os(macOS)
-import AppKit
+    import AppKit
 #else
-import UIKit
+    import UIKit
 #endif
 
-protocol EditableStackView: class {
+protocol EditableStackView: AnyObject {
     var arrangedSubviews: [BaseView] { get }
     func addArrangedSubview(_ view: BaseView)
     func add(arrangedView: BaseView, at index: Int)

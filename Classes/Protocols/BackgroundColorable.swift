@@ -1,38 +1,38 @@
 #if os(macOS)
-import AppKit
+    import AppKit
 #else
-import UIKit
+    import UIKit
 #endif
 
-public protocol BackgroundColorable: class {
+public protocol BackgroundColorable: AnyObject {
     @discardableResult
     func background(_ color: UColor) -> Self
-    
+
     @discardableResult
     func background(_ number: Int) -> Self
-    
+
     @discardableResult
     func background(_ color: State<UColor>) -> Self
 }
 
 protocol _BackgroundColorable: BackgroundColorable {
     var _backgroundColorState: State<UColor> { get }
-    
+
     #if os(macOS)
-    func _setBackgroundColor(_ v: NSColor?)
+        func _setBackgroundColor(_ v: NSColor?)
     #else
-    func _setBackgroundColor(_ v: UColor?)
+        func _setBackgroundColor(_ v: UColor?)
     #endif
 }
 
-extension BackgroundColorable {
+public extension BackgroundColorable {
     @discardableResult
-    public func background(_ number: Int) -> Self {
+    func background(_ number: Int) -> Self {
         background(number.color)
     }
-    
+
     @discardableResult
-    public func background(_ state: State<UColor>) -> Self {
+    func background(_ state: State<UColor>) -> Self {
         state.listen { [weak self] in
             self?.background($0)
         }
@@ -41,9 +41,9 @@ extension BackgroundColorable {
 }
 
 @available(iOS 13.0, *)
-extension BackgroundColorable {
+public extension BackgroundColorable {
     @discardableResult
-    public func background(_ color: UColor) -> Self {
+    func background(_ color: UColor) -> Self {
         guard let s = self as? _BackgroundColorable else { return self }
         _background(color, on: s)
         return self
@@ -59,15 +59,15 @@ extension _BackgroundColorable {
     }
 }
 
-private func  _background(_ color: UColor, on s: _BackgroundColorable) {
+private func _background(_ color: UColor, on s: _BackgroundColorable) {
     #if os(macOS)
-    s._backgroundColorState.wrappedValue.changeHandler = nil
+        s._backgroundColorState.wrappedValue.changeHandler = nil
     #endif
     s._backgroundColorState.wrappedValue = color
     s._setBackgroundColor(color.current)
     #if os(macOS)
-    s._backgroundColorState.wrappedValue.onChange { [weak s] new in
-        s?._setBackgroundColor(new)
-    }
+        s._backgroundColorState.wrappedValue.onChange { [weak s] new in
+            s?._setBackgroundColor(new)
+        }
     #endif
 }

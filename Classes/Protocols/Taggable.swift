@@ -6,21 +6,21 @@
 //
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #else
-import UIKit
+    import UIKit
 #endif
 
-public protocol Taggable: class {
+public protocol Taggable: AnyObject {
     var tag: Int { get set }
-    
+
     @discardableResult
     func tag(_ value: Int) -> Self
 }
 
-extension Taggable {
+public extension Taggable {
     @discardableResult
-    public func tag(_ value: Int) -> Self {
+    func tag(_ value: Int) -> Self {
         tag = value
         return self
     }
