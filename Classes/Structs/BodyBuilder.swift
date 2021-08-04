@@ -7,7 +7,7 @@
 @available(*, deprecated, renamed: "BodyBuilder")
 public typealias ViewBuilder = BodyBuilder
 
-@resultBuilder public enum BodyBuilder {
+@resultBuilder public struct BodyBuilder {
     public typealias Result = BodyBuilderItemable
     public typealias SingleView = () -> Result
 
