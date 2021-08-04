@@ -60,57 +60,38 @@
             menu.cancelTracking()
         }
 
-        public func title(_ value: String) -> Self {
-            menu.title = value
-            return self
-        }
+    
+    /// Determines the layout direction for menu items in the menu.
+    /// If no layout direction is explicitly set, the menu will default to the value of [NSApp userInterfaceLayoutDirection].
+    public func userInterfaceLayoutDirection(_ value: NSUserInterfaceLayoutDirection) -> Self {
+        menu.userInterfaceLayoutDirection = value
+        return self
+    }
+}
 
-        /// Set and get whether the menu autoenables items.
-        /// If a menu autoenables items, then calls to -[NSMenuItem setEnabled:] are ignored,
-        /// and the enabled state is computed via the NSMenuValidation informal protocol below.
-        /// Autoenabling is on by default.
-        public func autoenablesItems(_ value: Bool = true) -> Self {
-            menu.autoenablesItems = value
-            return self
-        }
+public protocol MenuBuilderContent {
+    var menuBuilderContent: MenuBuilderItem { get }
+}
 
-        /// Set the minimum width of the menu, in screen coordinates.
-        /// The menu will prefer to not draw smaller than its minimum width,
-        /// but may draw larger if it needs more space.
-        /// The default value is 0.
-        public func minimumWidth(_ value: CGFloat) -> Self {
-            menu.minimumWidth = value
-            return self
-        }
+public enum MenuBuilderItem {
+    case none
+    case menuItems([MenuItem])
+    case items([MenuBuilderItem])
+}
 
-        /// Sets the font for the menu.
-        /// This also affects the font of all submenus that do not have their own font.
-        public func font(_ value: NSFont) -> Self {
-            menu.font = value
-            return self
-        }
+struct _MenuContent: MenuBuilderContent {
+    let menuBuilderContent: MenuBuilderItem
+}
 
-        /// Determines whether contextual menu plugins may be appended to the menu,
-        /// if used as a context menu.
-        /// The default is YES.
-        public func allowsContextMenuPlugIns(_ value: Bool) -> Self {
-            menu.allowsContextMenuPlugIns = value
-            return self
-        }
-
-        /// Determines whether the menu contains a column for the state image.
-        /// The default is YES.
-        public func showsStateColumn(_ value: Bool) -> Self {
-            menu.showsStateColumn = value
-            return self
-        }
-
-        /// Determines the layout direction for menu items in the menu.
-        /// If no layout direction is explicitly set, the menu will default to the value of [NSApp userInterfaceLayoutDirection].
-        public func userInterfaceLayoutDirection(_ value: NSUserInterfaceLayoutDirection) -> Self {
-            menu.userInterfaceLayoutDirection = value
-            return self
-        }
+@resultBuilder public struct MenuBuilder {
+    public typealias Block = () -> MenuBuilderContent
+    
+    public static func buildBlock() -> MenuBuilderContent {
+        _MenuContent(menuBuilderContent: .none)
+    }
+    
+    public static func buildBlock(_ attrs: MenuBuilderContent...) -> MenuBuilderContent {
+        buildBlock(attrs)
     }
 
     public protocol MenuBuilderContent {

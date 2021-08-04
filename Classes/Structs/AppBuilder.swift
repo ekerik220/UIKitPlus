@@ -6,7 +6,31 @@
 //
 
 #if !os(macOS)
-    import UIKit
+import UIKit
+
+public protocol AppBuilderContent {
+    var appBuilderContent: AppBuilderItem { get }
+}
+
+public enum AppBuilderItem {
+    case none
+    case lifecycle(LifecycleBuilderProtocol)
+    case mainScene(BaseApp.MainScene)
+    case scene(BaseApp.Scene)
+    case shortcuts(BaseApp.Shortcuts)
+    case items([AppBuilderItem])
+}
+
+struct _AppContent: AppBuilderContent {
+    let appBuilderContent: AppBuilderItem
+}
+
+@resultBuilder public struct AppBuilder {
+    public typealias Block = () -> AppBuilderContent
+
+    public static func buildBlock() -> AppBuilderContent {
+        _AppContent(appBuilderContent: .none)
+    }
 
     public protocol AppBuilderContent {
         var appBuilderContent: AppBuilderItem { get }

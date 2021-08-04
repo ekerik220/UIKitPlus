@@ -22,8 +22,8 @@
         let shortcutBuilderContent: ShortcutBuilderItem
     }
 
-    @resultBuilder public enum ShortcutBuilder {
-        public typealias Block = () -> ShortcutBuilderContent
+@resultBuilder public struct ShortcutBuilder {
+    public typealias Block = () -> ShortcutBuilderContent
 
         public static func buildBlock() -> ShortcutBuilderContent {
             _ShortcutContent(shortcutBuilderContent: .none)

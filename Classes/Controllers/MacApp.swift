@@ -144,7 +144,7 @@
 //    let windowsBuilderContent: WindowsBuilderItem
     // }
 //
-    // @_functionBuilder public struct WindowsBuilder {
+//@resultBuilder public struct WindowsBuilder {
 //    public typealias Block = () -> WindowsBuilderContent
 //
 //    public static func buildBlock() -> WindowsBuilderContent {
@@ -171,10 +171,36 @@
 //    public static func buildEither(second: WindowsBuilderContent) -> WindowsBuilderContent {
 //        _Content(windowsBuilderContent: .items([second.windowsBuilderContent]))
 //    }
-    // }
+//}
 
-    public protocol AppBuilderContent {
-        var appBuilderContent: AppBuilderItem { get }
+public protocol AppBuilderContent {
+    var appBuilderContent: AppBuilderItem { get }
+}
+
+public enum AppBuilderItem {
+    case none
+    case statusItems([StatusItem])
+    case windows([Window])
+    case items([AppBuilderItem])
+}
+
+struct _AppContent: AppBuilderContent {
+    let appBuilderContent: AppBuilderItem
+}
+
+@resultBuilder public struct AppBuilder {
+    public typealias Block = () -> AppBuilderContent
+    
+    public static func buildBlock() -> AppBuilderContent {
+        _AppContent(appBuilderContent: .none)
+    }
+    
+    public static func buildBlock(_ attrs: AppBuilderContent...) -> AppBuilderContent {
+        buildBlock(attrs)
+    }
+    
+    public static func buildBlock(_ attrs: [AppBuilderContent]) -> AppBuilderContent {
+        _AppContent(appBuilderContent: .items(attrs.map { $0.appBuilderContent }))
     }
 
     public enum AppBuilderItem {
